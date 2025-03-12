@@ -35,3 +35,4 @@ C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFinancas-Api.MvcApplicatio
 C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFina.FAFEBCF5.Up2Date
 C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\package-lock.json
 C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\package.json
+C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFinancas-Api.sourcelink.json

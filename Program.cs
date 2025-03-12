@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using Microsoft.OpenApi.Models;
 using Usuarios.DB;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using GestFinancas_Api.Models;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,7 +50,7 @@ app.MapPut("/usuarios", (Usuario usuario) =>
   if (usuario != null)
   {
     UsuarioDB.AtualizarUsuario(usuario.nomeUsuario, usuario.emailUsuario, usuario.senha);
-    return Results.NoContent(); 
+    return Results.NoContent();
   }
   return Results.BadRequest("Dados inválidos.");
 });
@@ -58,7 +61,7 @@ app.MapDelete("/usuarios/{email}", (string email) =>
   if (email != null)
   {
     UsuarioDB.DeletarUsuario(email);
-    return Results.NoContent(); 
+    return Results.NoContent();
   }
   return Results.BadRequest("Dados inválidos.");
 });
