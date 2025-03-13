@@ -5,6 +5,13 @@ using GestFinancas_Api.Models;
 
 
 
+// public static void AbrirConexao()
+// {
+//     using (SqlConnection conexao = new SqlConnection(stringDeConexao))
+//     {
+//         conexao.Open();
+//     }
+// }
 public class UsuarioDB
 {
   private static List<Usuario> _usuarios = new List<Usuario>()
@@ -12,6 +19,8 @@ public class UsuarioDB
         new Usuario("admin", "admin@gmail.com", "admin123"),
         new Usuario("teste", "teste@gmail.com", "teste123")
     };
+    
+    
 
   public static List<Usuario> GetUsuarios()
   {

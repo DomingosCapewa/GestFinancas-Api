@@ -5,7 +5,14 @@ using Usuarios.DB;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using GestFinancas_Api.Models;
+using Microsoft.EntityFrameworkCore;
 
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<UsuarioDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+var app = builder.Build();
 
 var builder = WebApplication.CreateBuilder(args);
 

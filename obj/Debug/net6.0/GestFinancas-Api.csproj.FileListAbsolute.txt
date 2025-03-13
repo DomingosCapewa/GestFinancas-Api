@@ -36,3 +36,9 @@ C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFina.FAFEBCF5.Up2Date
 C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\package-lock.json
 C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\package.json
 C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFinancas-Api.sourcelink.json
+C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\System.Data.SqlClient.dll
+C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\runtimes\win-arm64\native\sni.dll
+C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\runtimes\win-x64\native\sni.dll
+C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\runtimes\win-x86\native\sni.dll
+C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\runtimes\unix\lib\net6.0\System.Data.SqlClient.dll
+C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Data.SqlClient.dll
