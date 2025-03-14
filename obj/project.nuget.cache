@@ -1,10 +1,9 @@
 {
   "version": 2,
-  "dgSpecHash": "7R47dBEOecI=",
+  "dgSpecHash": "BOHFYvksQcE=",
   "success": true,
   "projectFilePath": "C:\\GestFinancas\\gestfinancas-api\\GestFinancas-Api.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\olado\\.nuget\\packages\\microsoft.entityframeworkcore.tools\\9.0.3\\microsoft.entityframeworkcore.tools.9.0.3.nupkg.sha512",
     "C:\\Users\\olado\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
     "C:\\Users\\olado\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
     "C:\\Users\\olado\\.nuget\\packages\\runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",

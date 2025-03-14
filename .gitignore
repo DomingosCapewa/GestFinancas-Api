@@ -2,3 +2,5 @@
 .bin/Debug/net6.0/package-lock.json
 .obj/Debug/net6.0/package-lock.json
 .package.json
+.node_modules/
+.bin

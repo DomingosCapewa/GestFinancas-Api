@@ -1,76 +1,24 @@
-using System;
-using System.Collections.Generic;
-using Microsoft.OpenApi.Models;
-using Usuarios.DB;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using GestFinancas_Api.Models;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using GestFinancas.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<UsuarioDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Registrar o repositório de usuários
+builder.Services.AddScoped<UsuarioRepository>(sp =>
+    new UsuarioRepository(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
 
-var app = builder.Build();
-
-var builder = WebApplication.CreateBuilder(args);
-
-// Configuração do Swagger para Desenvolvimento
-if (builder.Environment.IsDevelopment())
-{
-  builder.Services.AddSwaggerGen(c =>
-  {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "User API", Description = "Gerenciamento de Usuários", Version = "v1" });
-  });
-}
-
+builder.Services.AddControllers();  // Habilitar o uso de controladores
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
-
-// Configuração do Swagger UI
+// Habilitar o Swagger UI
 app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
-  c.SwaggerEndpoint("/swagger/v1/swagger.json", "User API V1");
-});
+app.UseSwaggerUI();
 
-// Endpoints de Usuário
-app.MapGet("/usuarios", () => UsuarioDB.GetUsuarios());
-app.MapGet("/usuarios/{email}/{senha}", (string email, string senha) => UsuarioDB.GetUsuario(email, senha));
-
-app.MapPost("/usuarios", (Usuario usuario) =>
-{
-  if (usuario != null)
-  {
-    UsuarioDB.CriarUsuario(usuario.nomeUsuario, usuario.emailUsuario, usuario.senha);
-    return Results.Created($"/usuarios/{usuario.emailUsuario}", usuario);
-  }
-  return Results.BadRequest("Dados inválidos.");
-});
-
-app.MapPut("/usuarios", (Usuario usuario) =>
-{
-  if (usuario != null)
-  {
-    UsuarioDB.AtualizarUsuario(usuario.nomeUsuario, usuario.emailUsuario, usuario.senha);
-    return Results.NoContent();
-  }
-  return Results.BadRequest("Dados inválidos.");
-});
-
-app.MapDelete("/usuarios/{email}", (string email) =>
-{
-  Usuario? usuario = UsuarioDB.GetUsuario(email, "");
-  if (email != null)
-  {
-    UsuarioDB.DeletarUsuario(email);
-    return Results.NoContent();
-  }
-  return Results.BadRequest("Dados inválidos.");
-});
+app.MapControllers();  
 
 app.Run();
