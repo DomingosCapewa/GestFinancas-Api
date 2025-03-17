@@ -52,7 +52,7 @@ namespace GestFinancas.Data
       using (var connection = new SqlConnection(_connectionString))
       {
         await connection.OpenAsync();
-
+        //comando sql para selecionar um usuário por ID
         var command = new SqlCommand("SELECT Id, Nome, Email FROM Usuario WHERE Id = @Id", connection);
         command.Parameters.Add("@Id", SqlDbType.Int).Value = id;
 
@@ -73,7 +73,7 @@ namespace GestFinancas.Data
 
       return usuario;
     }
-
+    // Metodo assíncrono para obter um usuário por email e senha
     public async Task<Usuario?> GetUsuarioByEmailSenhaAsync(string email, string senha)
     {
       Usuario? usuario = null;
@@ -81,7 +81,7 @@ namespace GestFinancas.Data
       using (var connection = new SqlConnection(_connectionString))
       {
         await connection.OpenAsync();
-
+        //comando SQL para selecionar um usuário por email e senha
         var command = new SqlCommand("SELECT Id, Nome, Email FROM Usuario WHERE Email = @Email AND Senha = @Senha", connection);
         command.Parameters.Add("@Email", SqlDbType.VarChar).Value = email;
         command.Parameters.Add("@Senha", SqlDbType.VarChar).Value = senha;

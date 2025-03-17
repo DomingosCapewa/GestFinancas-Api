@@ -9,9 +9,9 @@ builder.Services.AddScoped<UsuarioRepository>(sp =>
     new UsuarioRepository(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
-builder.Services.AddControllers();  // Habilitar o uso de controladores
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();  
+builder.Services.AddEndpointsApiExplorer();  // Habilitar os endpoints da API 
+builder.Services.AddSwaggerGen(); 
 
 var app = builder.Build();
 

@@ -48,7 +48,7 @@ namespace GestFinancas.Controllers
       }
 
       var id = await _usuarioRepository.AddUsuarioAsync(usuario);
-      return CreatedAtAction(nameof(Get), new { id = id }, new { message = "Usuário criado com sucesso!", data = usuario  });
+      return CreatedAtAction(nameof(Get), new { id = id }, new { message = "Usuário criado com sucesso!", data = usuario });
     }
 
     [HttpPut("{id}")]
