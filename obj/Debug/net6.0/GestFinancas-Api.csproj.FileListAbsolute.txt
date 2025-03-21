@@ -1,3 +1,11 @@
+C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFinancas-Api.csproj.AssemblyReference.cache
+C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFinancas-Api.GeneratedMSBuildEditorConfig.editorconfig
+C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFinancas-Api.AssemblyInfoInputs.cache
+C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFinancas-Api.AssemblyInfo.cs
+C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFinancas-Api.csproj.CoreCompileInputs.cache
+C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFinancas-Api.MvcApplicationPartsAssemblyInfo.cs
+C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFinancas-Api.MvcApplicationPartsAssemblyInfo.cache
+C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFinancas-Api.sourcelink.json
 C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\appsettings.Development.json
 C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\appsettings.json
 C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\package-lock.json
@@ -18,14 +26,6 @@ C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\runtimes\win-x64\native\sni.dl
 C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\runtimes\win-x86\native\sni.dll
 C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\runtimes\unix\lib\net6.0\System.Data.SqlClient.dll
 C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Data.SqlClient.dll
-C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFinancas-Api.csproj.AssemblyReference.cache
-C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFinancas-Api.GeneratedMSBuildEditorConfig.editorconfig
-C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFinancas-Api.AssemblyInfoInputs.cache
-C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFinancas-Api.AssemblyInfo.cs
-C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFinancas-Api.csproj.CoreCompileInputs.cache
-C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFinancas-Api.MvcApplicationPartsAssemblyInfo.cs
-C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFinancas-Api.MvcApplicationPartsAssemblyInfo.cache
-C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFinancas-Api.sourcelink.json
 C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\scopedcss\bundle\GestFinancas-Api.styles.css
 C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\staticwebassets.build.json
 C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\staticwebassets.development.json

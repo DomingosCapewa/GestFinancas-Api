@@ -4,30 +4,29 @@ using GestFinancas.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Registrar o repositório de usuários
-builder.Services.AddScoped<UsuarioRepository>(sp =>
-    new UsuarioRepository(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
+// Registrar o repositório corretamente com interface
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();  // Habilitar os endpoints da API 
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Configurar CORS
 builder.Services.AddCors(options =>
 {
-  options.AddPolicy("AllowAllOrigins", builder =>
-      builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+    options.AddPolicy("AllowAllOrigins", policy =>
+        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
 
 var app = builder.Build();
 
 // Configuração de CORS
-app.UseCors("AllowAllOrigins");  // Habilitar CORS para todas as origens
+app.UseCors("AllowAllOrigins");
 
-// Habilitar o Swagger UI
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseRouting();
 
 app.MapControllers();
 
