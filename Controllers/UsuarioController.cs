@@ -4,6 +4,10 @@ using GestFinancas.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using GestFinancas.Services;  
+
+
 
 namespace GestFinancas.Controllers
 {
@@ -18,6 +22,8 @@ namespace GestFinancas.Controllers
       _usuarioRepository = usuarioRepository;
     }
 
+    // Método para obter todos os usuários
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetAllUsuarios()
     {
@@ -31,6 +37,7 @@ namespace GestFinancas.Controllers
       return Ok(usuarios);
     }
 
+    // Método de login de usuário
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] Usuario usuario)
     {
@@ -46,9 +53,12 @@ namespace GestFinancas.Controllers
         return NotFound(new { message = "Usuário não encontrado ou senha incorreta." });
       }
 
-      return Ok(new { message = "Login efetuado com sucesso", data = usuarioEncontrado });
+      var token = TokenService.GenerateToken(usuarioEncontrado);
+      return Ok(new { message = "Login efetuado com sucesso", data = usuarioEncontrado, token = token });
     }
 
+    // Método para adicionar um novo usuário
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> AddUsuario([FromBody] Usuario usuario)
     {
@@ -67,7 +77,8 @@ namespace GestFinancas.Controllers
       return Ok(new { message = "Usuário adicionado com sucesso", data = usuarioId });
     }
 
-
+    // Método para atualizar um usuário
+    [Authorize]
     [HttpPut]
     public async Task<IActionResult> UpdateUsuario([FromBody] Usuario usuario)
     {
@@ -85,6 +96,9 @@ namespace GestFinancas.Controllers
 
       return Ok(new { message = "Usuário atualizado com sucesso", data = usuarioId });
     }
+
+    // Método para deletar um usuário
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUsuario(int id)
     {
@@ -97,9 +111,5 @@ namespace GestFinancas.Controllers
 
       return Ok(new { message = "Usuário deletado com sucesso", data = usuarioId });
     }
-
-  
-
   }
-
 }

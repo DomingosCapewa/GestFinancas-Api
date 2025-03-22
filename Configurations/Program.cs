@@ -1,32 +1,38 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
 using GestFinancas.Data;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Registrar o repositório corretamente com interface
+// Adiciona acesso ao arquivo appsettings.json
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+// Adiciona o serviço do repositório de usuário
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
+// Adiciona controladores e endpoints
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-// Configurar CORS
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAllOrigins", policy =>
-        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-});
+// Configura o Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();  // Certifique-se de adicionar isso
 
 var app = builder.Build();
 
-// Configuração de CORS
-app.UseCors("AllowAllOrigins");
+// Configura o pipeline de requisições HTTP
+if (app.Environment.IsDevelopment())
+{
+  app.UseDeveloperExceptionPage();
 
-app.UseSwagger();
-app.UseSwaggerUI();
+  // Ativa o Swagger no ambiente de desenvolvimento
+  app.UseSwagger();
+  app.UseSwaggerUI();  // Disponibiliza a interface do Swagger
+}
 
 app.UseRouting();
+app.UseAuthorization();
 
 app.MapControllers();
 
