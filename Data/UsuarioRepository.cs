@@ -93,6 +93,28 @@ namespace GestFinancas.Data
       return null;
     }
 
+    public async Task<Usuario?> ResetSenhaUsuario(string email, string novaSenha)
+    {
+      using (var connection = new SqlConnection(_connectionString))
+      {
+        await connection.OpenAsync();
+        var updateCommand = new SqlCommand("UPDATE Usuario SET Senha = @NovaSenha, DataAtualizacao = @DataAtualizacao WHERE Email = @Email", connection);
+
+        updateCommand.Parameters.AddWithValue("@Email", email);
+        updateCommand.Parameters.AddWithValue("@NovaSenha", novaSenha);
+        updateCommand.Parameters.AddWithValue("@DataAtualizacao", DateTime.Now);
+
+        var rows = await updateCommand.ExecuteNonQueryAsync();
+
+        if (rows == 0)
+        {
+          return null;
+        }
+
+        return await GetUsuarioByEmailSenhaAsync(email, novaSenha);
+      }
+    }
+
     public async Task<int> AddUsuarioAsync(Usuario usuario)
     {
       using (var connection = new SqlConnection(_connectionString))

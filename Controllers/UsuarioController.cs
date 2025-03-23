@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using GestFinancas.Services;  
+// using GestFinancas.Services;  
 
 
 
@@ -23,7 +23,7 @@ namespace GestFinancas.Controllers
     }
 
     // Método para obter todos os usuários
-    [Authorize]
+    // [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetAllUsuarios()
     {
@@ -53,12 +53,31 @@ namespace GestFinancas.Controllers
         return NotFound(new { message = "Usuário não encontrado ou senha incorreta." });
       }
 
-      var token = TokenService.GenerateToken(usuarioEncontrado);
-      return Ok(new { message = "Login efetuado com sucesso", data = usuarioEncontrado, token = token });
+      // var token = TokenService.GenerateToken(usuarioEncontrado);
+      // return Ok(new { message = "Login efetuado com sucesso", data = usuarioEncontrado, token = token });
+      return Ok(new { message = "Login efetuado com sucesso", data = usuarioEncontrado });
     }
 
+    // Método para redefinir a senha do usuário
+    [HttpPost("reset-senha")]
+    public async Task<IActionResult> ResetSenha([FromBody] Usuario usuario)
+    {
+      if (usuario == null || string.IsNullOrEmpty(usuario.Email) || string.IsNullOrEmpty(usuario.Senha))
+      {
+        return BadRequest(new { message = "Email e senha são obrigatórios." });
+      }
+
+      var usuarioEncontrado = await _usuarioRepository.ResetSenhaUsuario(usuario.Email, usuario.Senha);
+
+      if (usuarioEncontrado == null)
+      {
+        return NotFound(new { message = "Usuário não encontrado ou senha incorreta." });
+      }
+
+      return Ok(new { message = "Senha alterada com sucesso", data = usuarioEncontrado });
+    }
     // Método para adicionar um novo usuário
-    [Authorize]
+    // [Authorize]
     [HttpPost]
     public async Task<IActionResult> AddUsuario([FromBody] Usuario usuario)
     {
@@ -78,7 +97,7 @@ namespace GestFinancas.Controllers
     }
 
     // Método para atualizar um usuário
-    [Authorize]
+    // [Authorize]
     [HttpPut]
     public async Task<IActionResult> UpdateUsuario([FromBody] Usuario usuario)
     {
@@ -98,7 +117,7 @@ namespace GestFinancas.Controllers
     }
 
     // Método para deletar um usuário
-    [Authorize]
+    // [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUsuario(int id)
     {

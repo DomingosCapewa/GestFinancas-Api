@@ -17,7 +17,10 @@ builder.Services.AddControllers();
 
 // Configura o Swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();  // Certifique-se de adicionar isso
+builder.Services.AddSwaggerGen(
+
+
+);  // Certifique-se de adicionar isso
 
 var app = builder.Build();
 
@@ -26,7 +29,6 @@ if (app.Environment.IsDevelopment())
 {
   app.UseDeveloperExceptionPage();
 
-  // Ativa o Swagger no ambiente de desenvolvimento
   app.UseSwagger();
   app.UseSwaggerUI();  // Disponibiliza a interface do Swagger
 }
