@@ -52,3 +52,15 @@
 //     }
 //   }
 // }
+
+using System;
+
+public class TokenService
+{
+  public string GerarTokenRecuperacao()
+  {
+    // Gerar um token aleatório
+    var token = Guid.NewGuid().ToString();
+    return token;
+  }
+}

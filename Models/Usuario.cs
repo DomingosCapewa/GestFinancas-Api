@@ -6,6 +6,7 @@ public class Usuario
   public string? Nome { get; set; }
   public string? Email { get; set; }
   public string? Senha { get; set; }
+  public DateTime? DataAtualizacao { get; set; } = DateTime.UtcNow;
 
   public bool IsValid()
   {

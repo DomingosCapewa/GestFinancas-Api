@@ -1,159 +1,98 @@
 using GestFinancas.Models;
-using System;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
 using System.Threading.Tasks;
 
 namespace GestFinancas.Data
 {
   public class UsuarioRepository : IUsuarioRepository
   {
-    private readonly string _connectionString;
+    private readonly GestFinancasContext _context;
 
-    public UsuarioRepository(IConfiguration configuration)
+    public UsuarioRepository(GestFinancasContext context)
     {
-      _connectionString = configuration.GetConnectionString("DefaultConnection");
+      _context = context;
     }
 
-    public async Task<List<Usuario>> GetAllUsuariosAsync()
+    public async Task<List<Usuario>> ObterTodosUsuariosAsync()
     {
-      var usuarios = new List<Usuario>();
-
-      using (var connection = new SqlConnection(_connectionString))
-      {
-        await connection.OpenAsync();
-        var command = new SqlCommand("SELECT Id, Nome, Email FROM Usuario", connection);
-
-        using (var reader = await command.ExecuteReaderAsync())
-        {
-          while (await reader.ReadAsync())
-          {
-            usuarios.Add(new Usuario
-            {
-              Id = reader.GetInt32("Id"),
-              Nome = reader.GetString("Nome"),
-              Email = reader.GetString("Email")
-            });
-          }
-        }
-      }
-
-      return usuarios;
+      return await _context.Usuario.ToListAsync();
     }
 
-    public async Task<Usuario?> GetUsuarioByIdAsync(int id)
+    public async Task<Usuario?> ObterUsuarioPorIdAsync(int id)
     {
-      using (var connection = new SqlConnection(_connectionString))
-      {
-        await connection.OpenAsync();
-        var command = new SqlCommand("SELECT Id, Nome, Email FROM Usuario WHERE Id = @Id", connection);
-        command.Parameters.AddWithValue("@Id", id);
-
-        using (var reader = await command.ExecuteReaderAsync())
-        {
-          if (await reader.ReadAsync())
-          {
-            return new Usuario
-            {
-              Id = reader.GetInt32("Id"),
-              Nome = reader.GetString("Nome"),
-              Email = reader.GetString("Email")
-            };
-          }
-        }
-      }
-
-      return null;
+      return await _context.Usuario
+          .FirstOrDefaultAsync(u => u.Id == id);
     }
 
-    public async Task<Usuario?> GetUsuarioByEmailSenhaAsync(string email, string senha)
+    public async Task<Usuario?> ObterUsuarioPorEmailSenhaAsync(string email, string senha)
+
     {
-      using (var connection = new SqlConnection(_connectionString))
-      {
-        await connection.OpenAsync();
-        var command = new SqlCommand("SELECT Id, Nome, Email FROM Usuario WHERE Email = @Email AND Senha = @Senha", connection);
-        command.Parameters.AddWithValue("@Email", email);
-        command.Parameters.AddWithValue("@Senha", senha);
-
-        using (var reader = await command.ExecuteReaderAsync())
-        {
-          if (await reader.ReadAsync())
-          {
-            return new Usuario
-            {
-              Id = reader.GetInt32("Id"),
-              Nome = reader.GetString("Nome"),
-              Email = reader.GetString("Email")
-            };
-          }
-        }
-      }
-
-      return null;
+      return await _context.Usuario
+          .FirstOrDefaultAsync(u => u.Email == email && u.Senha == senha);
     }
 
-    public async Task<Usuario?> ResetSenhaUsuario(string email, string novaSenha)
+    public async Task<Usuario?> ResetarSenhaUsuario(string email, string novaSenha)
     {
-      using (var connection = new SqlConnection(_connectionString))
+      var usuario = await _context.Usuario
+          .FirstOrDefaultAsync(u => u.Email == email);
+
+      if (usuario == null)
       {
-        await connection.OpenAsync();
-        var updateCommand = new SqlCommand("UPDATE Usuario SET Senha = @NovaSenha, DataAtualizacao = @DataAtualizacao WHERE Email = @Email", connection);
-
-        updateCommand.Parameters.AddWithValue("@Email", email);
-        updateCommand.Parameters.AddWithValue("@NovaSenha", novaSenha);
-        updateCommand.Parameters.AddWithValue("@DataAtualizacao", DateTime.Now);
-
-        var rows = await updateCommand.ExecuteNonQueryAsync();
-
-        if (rows == 0)
-        {
-          return null;
-        }
-
-        return await GetUsuarioByEmailSenhaAsync(email, novaSenha);
+        return null;
       }
+
+      usuario.Senha = novaSenha;
+      usuario.DataAtualizacao = DateTime.Now;
+
+      await _context.SaveChangesAsync();
+      return usuario;
     }
 
     public async Task<int> AddUsuarioAsync(Usuario usuario)
     {
-      using (var connection = new SqlConnection(_connectionString))
-      {
-        await connection.OpenAsync();
-        var command = new SqlCommand("INSERT INTO Usuario (Nome, Email, Senha, DataCadastro) OUTPUT INSERTED.Id VALUES (@Nome, @Email, @Senha, @DataCadastro)", connection);
-        command.Parameters.AddWithValue("@Nome", usuario.Nome);
-        command.Parameters.AddWithValue("@Email", usuario.Email);
-        command.Parameters.AddWithValue("@Senha", usuario.Senha);
-        command.Parameters.AddWithValue("@DataCadastro", DateTime.Now);
-
-        return (int)await command.ExecuteScalarAsync();
-      }
+      _context.Usuario.Add(usuario);
+      await _context.SaveChangesAsync();
+      return usuario.Id;
     }
 
-    public async Task<int> UpdateUsuarioAsync(Usuario usuario)
+    public async Task<int> AtualizarUsuarioAsync(Usuario usuario)
     {
-      using (var connection = new SqlConnection(_connectionString))
-      {
-        await connection.OpenAsync();
-        var command = new SqlCommand("UPDATE Usuario SET Nome = @Nome, Email = @Email WHERE Id = @Id", connection);
-        command.Parameters.AddWithValue("@Id", usuario.Id);
-        command.Parameters.AddWithValue("@Nome", usuario.Nome);
-        command.Parameters.AddWithValue("@Email", usuario.Email);
+      var existingUsuario = await _context.Usuario
+          .FirstOrDefaultAsync(u => u.Id == usuario.Id);
 
-        return await command.ExecuteNonQueryAsync();
+      if (existingUsuario == null)
+      {
+        return 0;
       }
+
+      existingUsuario.Nome = usuario.Nome;
+      existingUsuario.Email = usuario.Email;
+
+      await _context.SaveChangesAsync();
+      return existingUsuario.Id;
     }
 
-    public async Task<int> DeleteUsuarioAsync(int id)
+    public async Task<Usuario?> RecuperarSenha(string email)
     {
-      using (var connection = new SqlConnection(_connectionString))
-      {
-        await connection.OpenAsync();
-        var command = new SqlCommand("DELETE FROM Usuario WHERE Id = @Id", connection);
-        command.Parameters.AddWithValue("@Id", id);
-
-        return await command.ExecuteNonQueryAsync();
-      }
+      return await _context.Usuario
+          .FirstOrDefaultAsync(u => u.Email == email);
     }
+
+    //   public async Task<int> DeleteUsuarioAsync(int id)
+    //   {
+    //     var usuario = await _context.Usuarios
+    //         .FirstOrDefaultAsync(u => u.Id == id);
+
+    //     if (usuario == null)
+    //     {
+    //       return 0;
+    //     }
+
+    //     _context.Usuarios.Remove(usuario);
+    //     await _context.SaveChangesAsync();
+    //     return id;
+    //   }
+    // }// ajustar para a remoção lógica 
   }
 }
