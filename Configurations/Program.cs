@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using GestFinancas.Models;
+using GestFinancas_Api.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);

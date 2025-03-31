@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using GestFinancas.Models;
-using Usuario = GestFinancas.Models.Usuario;
+using GestFinancas_Api.Models;
+using Usuario = GestFinancas_Api.Models.Usuario;
 
 namespace GestFinancas.Data
 {

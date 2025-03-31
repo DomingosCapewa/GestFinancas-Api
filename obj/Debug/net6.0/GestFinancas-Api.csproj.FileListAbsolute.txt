@@ -8,8 +8,6 @@ C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFinancas-Api.MvcApplicatio
 C:\GestFinancas\gestfinancas-api\obj\Debug\net6.0\GestFinancas-Api.sourcelink.json
 C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\appsettings.Development.json
 C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\appsettings.json
-C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\package-lock.json
-C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\package.json
 C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\GestFinancas-Api.staticwebassets.endpoints.json
 C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\GestFinancas-Api.exe
 C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\GestFinancas-Api.deps.json

@@ -1,12 +1,15 @@
-using Microsoft.AspNetCore.Mvc;
 using GestFinancas.Data;
-using GestFinancas.Models;
-using System;
+using GestFinancas_Api.Models;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using System.Net;
 using System.Net.Mail;
+using GestFinancas_Api.Helper;
 using System.Text;
 
 
@@ -18,10 +21,12 @@ namespace GestFinancas.Controllers
   public class UsuarioController : ControllerBase
   {
     private readonly IUsuarioRepository _usuarioRepository;
+    private readonly EnviarEmail _enviarEmail;
 
-    public UsuarioController(IUsuarioRepository usuarioRepository)
+    public UsuarioController(IUsuarioRepository usuarioRepository, IConfiguration configuration)
     {
       _usuarioRepository = usuarioRepository;
+      _enviarEmail = new EnviarEmail(configuration);
 
 
     }
@@ -62,23 +67,23 @@ namespace GestFinancas.Controllers
     }
 
     // Método para redefinir a senha do usuário
-    [HttpPost("reset-senha")]
-    public async Task<IActionResult> ResetarSenha([FromBody] Usuario usuario)
-    {
-      if (usuario == null || string.IsNullOrEmpty(usuario.Email) || string.IsNullOrEmpty(usuario.Senha))
-      {
-        return BadRequest(new { message = "Email e senha são obrigatórios." });
-      }
+    // [HttpPost("reset-senha")]
+    // public async Task<IActionResult> ResetarSenha([FromBody] Usuario usuario)
+    // {
+    //   if (usuario == null || string.IsNullOrEmpty(usuario.Email) || string.IsNullOrEmpty(usuario.Senha))
+    //   {
+    //     return BadRequest(new { message = "Email e senha são obrigatórios." });
+    //   }
 
-      var usuarioEncontrado = await _usuarioRepository.ResetarSenhaUsuario(usuario.Email, usuario.Senha);
+    //   var usuarioEncontrado = await _usuarioRepository.ResetarSenhaUsuario(usuario.Email, usuario.Senha);
 
-      if (usuarioEncontrado == null)
-      {
-        return NotFound(new { message = "Usuário não encontrado ou senha incorreta." });
-      }
+    //   if (usuarioEncontrado == null)
+    //   {
+    //     return NotFound(new { message = "Usuário não encontrado ou senha incorreta." });
+    //   }
 
-      return Ok(new { message = "Senha alterada com sucesso", data = usuarioEncontrado });
-    }
+    //   return Ok(new { message = "Senha alterada com sucesso", data = usuarioEncontrado });
+    // }
     // Método para adicionar um novo usuário
     // [Authorize]
     [HttpPost]

@@ -1,5 +1,5 @@
 
-namespace GestFinancas.Models;
+namespace GestFinancas_Api.Models;
 public class Usuario
 {
   public int Id { get; set; }

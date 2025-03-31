@@ -1,4 +1,4 @@
-using GestFinancas.Models;
+using GestFinancas_Api.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -32,22 +32,27 @@ namespace GestFinancas.Data
           .FirstOrDefaultAsync(u => u.Email == email && u.Senha == senha);
     }
 
-    public async Task<Usuario?> ResetarSenhaUsuario(string email, string novaSenha)
+    public async Task<Usuario?> BuscarUsuarioPorEmail(string email)
     {
-      var usuario = await _context.Usuario
+      return await _context.Usuario
           .FirstOrDefaultAsync(u => u.Email == email);
-
-      if (usuario == null)
-      {
-        return null;
-      }
-
-      usuario.Senha = novaSenha;
-      usuario.DataAtualizacao = DateTime.Now;
-
-      await _context.SaveChangesAsync();
-      return usuario;
     }
+    // public async Task<Usuario?> ResetarSenhaUsuario(string email, string novaSenha)
+    // {
+    //   var usuario = await _context.Usuario
+    //       .FirstOrDefaultAsync(u => u.Email == email);
+
+    //   if (usuario == null)
+    //   {
+    //     return null;
+    //   }
+
+    //   usuario.Senha = novaSenha;
+    //   usuario.DataAtualizacao = DateTime.Now;
+
+    //   await _context.SaveChangesAsync();
+    //   return usuario;
+    // }
 
     public async Task<int> AddUsuarioAsync(Usuario usuario)
     {
