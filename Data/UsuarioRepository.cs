@@ -77,6 +77,11 @@ namespace GestFinancas.Data
       await _context.SaveChangesAsync();
       return existingUsuario.Id;
     }
+    public async Task<Usuario?> ObterUsuarioPorEmailAsync(string email)
+    {
+      return await _context.Usuario
+          .FirstOrDefaultAsync(u => u.Email == email);
+    }
 
     public async Task<Usuario?> RecuperarSenha(string email)
     {

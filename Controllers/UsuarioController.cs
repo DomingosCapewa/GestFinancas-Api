@@ -26,7 +26,7 @@ namespace GestFinancas.Controllers
     public UsuarioController(IUsuarioRepository usuarioRepository, IConfiguration configuration)
     {
       _usuarioRepository = usuarioRepository;
-      _enviarEmail = new EnviarEmail(configuration);
+      _enviarEmail = new EnviarEmail(configuration, _usuarioRepository);
 
 
     }
