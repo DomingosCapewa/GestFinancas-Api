@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace GestFinancas.Data
+namespace GestFinancas_Api.Data
 {
   public class UsuarioRepository : IUsuarioRepository
   {

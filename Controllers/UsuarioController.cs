@@ -1,4 +1,4 @@
-using GestFinancas.Data;
+using GestFinancas_Api.Data;
 using GestFinancas_Api.Models;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
@@ -22,10 +22,12 @@ namespace GestFinancas.Controllers
   {
     private readonly IUsuarioRepository _usuarioRepository;
     private readonly EnviarEmail _enviarEmail;
+    private readonly IAuthenticate _authenticate;
 
-    public UsuarioController(IUsuarioRepository usuarioRepository, IConfiguration configuration)
+    public UsuarioController(IUsuarioRepository usuarioRepository, IConfiguration configuration, IAuthenticate authenticate)
     {
       _usuarioRepository = usuarioRepository;
+      _authenticate = authenticate;
       _enviarEmail = new EnviarEmail(configuration, _usuarioRepository);
 
 
@@ -62,47 +64,42 @@ namespace GestFinancas.Controllers
         return NotFound(new { message = "Usuário não encontrado ou senha incorreta." });
       }
 
-      
+
       return Ok(new { message = "Login efetuado com sucesso", data = usuarioEncontrado });
     }
 
-    // Método para redefinir a senha do usuário
-    // [HttpPost("reset-senha")]
-    // public async Task<IActionResult> ResetarSenha([FromBody] Usuario usuario)
-    // {
-    //   if (usuario == null || string.IsNullOrEmpty(usuario.Email) || string.IsNullOrEmpty(usuario.Senha))
-    //   {
-    //     return BadRequest(new { message = "Email e senha são obrigatórios." });
-    //   }
 
-    //   var usuarioEncontrado = await _usuarioRepository.ResetarSenhaUsuario(usuario.Email, usuario.Senha);
 
-    //   if (usuarioEncontrado == null)
-    //   {
-    //     return NotFound(new { message = "Usuário não encontrado ou senha incorreta." });
-    //   }
 
-    //   return Ok(new { message = "Senha alterada com sucesso", data = usuarioEncontrado });
-    // }
     // Método para adicionar um novo usuário
-    // [Authorize]
-    [HttpPost]
-    public async Task<IActionResult> AddUsuario([FromBody] Usuario usuario)
+
+    // Método para adicionar um novo usuário
+[HttpPost("cadastrar-usuario")]
+public async Task<IActionResult> AddUsuario([FromBody] Usuario usuario)
+{
+    if (usuario == null || !usuario.IsValid())
     {
-      if (usuario == null || !usuario.IsValid())
-      {
-        return BadRequest(new { message = "Usuário inválido." });
-      }
-
-      var usuarioId = await _usuarioRepository.AddUsuarioAsync(usuario);
-
-      if (usuarioId == 0)
-      {
-        return BadRequest(new { message = "Erro ao adicionar usuário." });
-      }
-
-      return Ok(new { message = "Usuário adicionado com sucesso", data = usuarioId });
+        return BadRequest(new { message = "Dados inválidos." });
     }
+
+    var emailExiste = await _usuarioRepository.BuscarUsuarioPorEmail(usuario.Email);
+    if (emailExiste != null)
+    {
+        return BadRequest(new { message = "Este email já está cadastrado" });
+    }
+    var usuarioId = await _usuarioRepository.AddUsuarioAsync(usuario);
+
+    if (usuarioId == null)
+    {
+        return BadRequest(new { message = "Erro ao cadastrar usuário." });
+    }
+
+    var token = _authenticate.GenerateToken(usuario.Id, usuario.Email);
+    var userToken = new UserToken { Token = token };  
+
+    return Ok(new { message = "Usuário cadastrado com sucesso", data = userToken }); 
+}
+
 
     // Método para atualizar um usuário
     // [Authorize]
@@ -125,6 +122,31 @@ namespace GestFinancas.Controllers
     }
 
 
+
+
+
+
+
+
+
+    // Método para redefinir a senha do usuário
+    // [HttpPost("reset-senha")]
+    // public async Task<IActionResult> ResetarSenha([FromBody] Usuario usuario)
+    // {
+    //   if (usuario == null || string.IsNullOrEmpty(usuario.Email) || string.IsNullOrEmpty(usuario.Senha))
+    //   {
+    //     return BadRequest(new { message = "Email e senha são obrigatórios." });
+    //   }
+
+    //   var usuarioEncontrado = await _usuarioRepository.ResetarSenhaUsuario(usuario.Email, usuario.Senha);
+
+    //   if (usuarioEncontrado == null)
+    //   {
+    //     return NotFound(new { message = "Usuário não encontrado ou senha incorreta." });
+    //   }
+
+    //   return Ok(new { message = "Senha alterada com sucesso", data = usuarioEncontrado });
+    // }
 
     // // Método para deletar um usuário
     // // [Authorize]
@@ -156,5 +178,7 @@ namespace GestFinancas.Controllers
 
     //   return Ok(new { message = "Usuário deletado com sucesso", data = usuarioId });
     // }
+
+
   }
 }

@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using GestFinancas_Api.Models;
 using Usuario = GestFinancas_Api.Models.Usuario;
 
-namespace GestFinancas.Data
+namespace GestFinancas_Api.Data
 {
   public class GestFinancasContext : DbContext
   {

@@ -4,7 +4,7 @@ using System.Text;
 using GestFinancas_Api.Models;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
-using GestFinancas.Data;
+using GestFinancas_Api.Data;
 
 namespace GestFinancas_Api.Helper
 {

@@ -1,4 +1,4 @@
-using GestFinancas.Data;
+using GestFinancas_Api.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using GestFinancas_Api.Models;
 using GestFinancas_Api.Helper;
+using GestFinancas_Api.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,31 +19,43 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 // Registra o DbContext para uso com o Entity Framework
 builder.Services.AddDbContext<GestFinancasContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 // Registra o serviço EnviarEmail para injeção de dependência
 builder.Services.AddScoped<EnviarEmail>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-// Adiciona o serviço do repositório de usuário
-builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
-// Configura a autenticação JWT
-// builder.Services.AddAuthentication(options =>
-// {
-//   options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//   options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-// })
-// .AddJwtBearer(options =>
-// {
-//   options.RequireHttpsMetadata = false;
-//   options.SaveToken = true;
-//   options.TokenValidationParameters = new TokenValidationParameters
-//   {
-//     ValidateIssuer = true,
-//     ValidateAudience = true,
-//     ValidIssuer = builder.Configuration["Jwt:Issuer"],
-//     ValidAudience = builder.Configuration["Jwt:Audience"],
-//     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]))
-//   };
-// });
+// Corrigido para usar o nome correto da classe Authenticate
+builder.Services.AddScoped<IAuthenticate, Authenticate>();
+
+builder.Services.AddAuthentication(options =>
+{
+  options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+  options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+  options.TokenValidationParameters = new TokenValidationParameters
+  {
+    ValidateIssuer = true,
+    ValidateAudience = true,
+    ValidateLifetime = true,
+    ValidateIssuerSigningKey = true,
+    ValidIssuer = builder.Configuration["Jwt:Issuer"], // Usar ValidIssuer
+    ValidAudience = builder.Configuration["Jwt:Audience"],
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"])), // Aqui usa o SecretKey para a chave de assinatura
+    ClockSkew = TimeSpan.Zero // Remove o atraso padrão de 5 minutos
+  };
+});
+
+// Adiciona a configuração CORS
+builder.Services.AddCors(options =>
+{
+  options.AddPolicy("AllowLocalhost4200", policy =>
+  {
+    policy.WithOrigins("http://localhost:4200")
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+  });
+});
 
 // Adiciona controladores e endpoints
 builder.Services.AddControllers();
@@ -70,6 +83,7 @@ if (app.Environment.IsDevelopment())
 {
   app.UseDeveloperExceptionPage();
 
+  // Ativa o Swagger
   app.UseSwagger();
   app.UseSwaggerUI(c =>
   {
@@ -77,6 +91,9 @@ if (app.Environment.IsDevelopment())
     c.RoutePrefix = string.Empty;
   });
 }
+
+// Aplica a política CORS
+app.UseCors("AllowLocalhost4200");
 
 // Configura autenticação e autorização
 app.UseRouting();
