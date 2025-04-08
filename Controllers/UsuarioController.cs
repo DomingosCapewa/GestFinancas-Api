@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.Mail;
 using GestFinancas_Api.Helper;
 using System.Text;
+using GestFinancas_Api.Models;
 
 
 

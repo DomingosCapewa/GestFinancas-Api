@@ -9,8 +9,11 @@ public class Usuario
   public DateTime? DataCadastro { get; set; } = DateTime.UtcNow;
 
   // Propriedades para hash e salt
-  public string SenhaHash { get; set; }
-  public string SenhaSalt { get; set; }
+
+  public string? SenhaHash { get; set; }
+  public string? SenhaSalt { get; set; }
+
+
 
   public bool IsValid()
   {

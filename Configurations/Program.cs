@@ -10,6 +10,7 @@ using System.Text;
 using GestFinancas_Api.Models;
 using GestFinancas_Api.Helper;
 using GestFinancas_Api.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,18 +21,22 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 builder.Services.AddDbContext<GestFinancasContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Registra o serviço EnviarEmail para injeção de dependência
+// Registra o AppDbContext para uso com o Entity Framework
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Injeção de dependência
 builder.Services.AddScoped<EnviarEmail>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-
-// Corrigido para usar o nome correto da classe Authenticate
 builder.Services.AddScoped<IAuthenticate, Authenticate>();
 
+// Autenticação JWT
 builder.Services.AddAuthentication(options =>
 {
   options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
   options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
+})
+.AddJwtBearer(options =>
 {
   options.TokenValidationParameters = new TokenValidationParameters
   {
@@ -39,14 +44,14 @@ builder.Services.AddAuthentication(options =>
     ValidateAudience = true,
     ValidateLifetime = true,
     ValidateIssuerSigningKey = true,
-    ValidIssuer = builder.Configuration["Jwt:Issuer"], // Usar ValidIssuer
+    ValidIssuer = builder.Configuration["Jwt:Issuer"],
     ValidAudience = builder.Configuration["Jwt:Audience"],
-    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"])), // Aqui usa o SecretKey para a chave de assinatura
-    ClockSkew = TimeSpan.Zero // Remove o atraso padrão de 5 minutos
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"])),
+    ClockSkew = TimeSpan.Zero
   };
 });
 
-// Adiciona a configuração CORS
+// CORS
 builder.Services.AddCors(options =>
 {
   options.AddPolicy("AllowLocalhost4200", policy =>
@@ -57,10 +62,18 @@ builder.Services.AddCors(options =>
   });
 });
 
-// Adiciona controladores e endpoints
+// Versionamento da API (opcional)
+builder.Services.AddApiVersioning(options =>
+{
+  options.AssumeDefaultVersionWhenUnspecified = true;
+  options.DefaultApiVersion = new ApiVersion(1, 0);
+  options.ReportApiVersions = true;
+});
+
+// Controladores
 builder.Services.AddControllers();
 
-// Configura o Swagger
+// Swagger
 builder.Services.AddSwaggerGen(options =>
 {
   options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
@@ -78,12 +91,12 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-// Configura o pipeline de requisições HTTP
+
 if (app.Environment.IsDevelopment())
 {
   app.UseDeveloperExceptionPage();
 
-  // Ativa o Swagger
+  // Swagger disponível apenas no desenvolvimento
   app.UseSwagger();
   app.UseSwaggerUI(c =>
   {
@@ -92,15 +105,15 @@ if (app.Environment.IsDevelopment())
   });
 }
 
-// Aplica a política CORS
+// Middleware de CORS
 app.UseCors("AllowLocalhost4200");
 
-// Configura autenticação e autorização
+// Middleware de autenticação e autorização
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Mapeia os controladores
+
 app.MapControllers();
 
 app.Run();

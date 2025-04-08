@@ -9,4 +9,5 @@ namespace GestFinancas_Api.Models
     {
         public string Token { get; set; }
     }
+    
 }

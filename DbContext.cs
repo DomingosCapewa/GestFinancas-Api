@@ -13,7 +13,6 @@ namespace GestFinancas_Api.Data
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
       base.OnModelCreating(modelBuilder);
-      // Configurações adicionais de mapeamento de entidades
     }
   }
 }
