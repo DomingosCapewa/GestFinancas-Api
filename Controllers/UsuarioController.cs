@@ -12,6 +12,13 @@ using System.Net.Mail;
 using GestFinancas_Api.Helper;
 using System.Text;
 using GestFinancas_Api.Models;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using GestFinancas_Api.Dtos;
+using GestFinancas_Api.Identity;
+using GestFinancas_Api.Data;
+
 
 
 
@@ -35,7 +42,7 @@ namespace GestFinancas.Controllers
     }
 
     // Método para obter todos os usuários
-    // [Authorize]
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> ObterTodosUsuarios()
     {
@@ -49,57 +56,65 @@ namespace GestFinancas.Controllers
       return Ok(usuario);
     }
 
-    // Método de login de usuário
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] Usuario usuario)
+    public async Task<IActionResult> Login([FromBody] LoginDto login)
     {
-      if (usuario == null || string.IsNullOrEmpty(usuario.Email) || string.IsNullOrEmpty(usuario.Senha))
-      {
-        return BadRequest(new { message = "Email e senha são obrigatórios." });
-      }
+      if (!ModelState.IsValid)
+        return BadRequest(ModelState);
 
-      var usuarioEncontrado = await _usuarioRepository.ObterUsuarioPorEmailSenhaAsync(usuario.Email, usuario.Senha);
+      var autenticado = await _authenticate.AuthenticateAscync(login.Email, login.Senha);
+      if (!autenticado)
+        return Unauthorized(new { message = "Email ou senha inválidos." });
 
-      if (usuarioEncontrado == null)
-      {
-        return NotFound(new { message = "Usuário não encontrado ou senha incorreta." });
-      }
+      // Buscar o usuário completo após autenticação
+      var usuario = await _usuarioRepository.BuscarUsuarioPorEmail(login.Email);
+      if (usuario == null)
+        return NotFound(new { message = "Usuário não encontrado." });
 
+      var token = _authenticate.GenerateToken(usuario.Id, usuario.Email);
+      var userToken = new UserToken { Token = token };
 
-      return Ok(new { message = "Login efetuado com sucesso", data = usuarioEncontrado });
+      return Ok(new { message = "Login realizado com sucesso", data = userToken });
     }
 
 
 
-
-    // Método para adicionar um novo usuário
-
-    // Método para adicionar um novo usuário
-[HttpPost("cadastrar-usuario")]
-public async Task<IActionResult> AddUsuario([FromBody] Usuario usuario)
-{
-    if (usuario == null || !usuario.IsValid())
+    [HttpPost("cadastrar-usuario")]
+    public async Task<IActionResult> AddUsuario([FromBody] Usuario usuario)
     {
+      if (usuario == null || !usuario.IsValid())
+      {
         return BadRequest(new { message = "Dados inválidos." });
-    }
+      }
 
-    var emailExiste = await _usuarioRepository.BuscarUsuarioPorEmail(usuario.Email);
-    if (emailExiste != null)
-    {
+      var emailExiste = await _usuarioRepository.BuscarUsuarioPorEmail(usuario.Email);
+      if (emailExiste != null)
+      {
         return BadRequest(new { message = "Este email já está cadastrado" });
-    }
-    var usuarioId = await _usuarioRepository.AddUsuarioAsync(usuario);
+      }
 
-    if (usuarioId == null)
-    {
+      // Aqui criamos o hash e salt da senha
+      using var hmac = new System.Security.Cryptography.HMACSHA512();
+
+      usuario.SenhaSalt = Convert.ToBase64String(hmac.Key);
+      usuario.SenhaHash = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(usuario.Senha)));
+
+      // Evita salvar a senha original no banco
+      usuario.Senha = null;
+
+      var usuarioId = await _usuarioRepository.AddUsuarioAsync(usuario);
+
+      if (usuarioId == null)
+      {
         return BadRequest(new { message = "Erro ao cadastrar usuário." });
+      }
+
+      var token = _authenticate.GenerateToken(usuario.Id, usuario.Email);
+      var userToken = new UserToken { Token = token };
+
+      return Ok(new { message = "Usuário cadastrado com sucesso", data = userToken });
     }
 
-    var token = _authenticate.GenerateToken(usuario.Id, usuario.Email);
-    var userToken = new UserToken { Token = token };  
-
-    return Ok(new { message = "Usuário cadastrado com sucesso", data = userToken }); 
-}
 
 
     // Método para atualizar um usuário
@@ -122,63 +137,55 @@ public async Task<IActionResult> AddUsuario([FromBody] Usuario usuario)
       return Ok(new { message = "Usuário atualizado com sucesso", data = usuarioId });
     }
 
+    [HttpPost("reset-senha")]
+    public async Task<IActionResult> ResetarSenha([FromBody] RedefinirSenhaDto redefinir)
+    {
+      if (string.IsNullOrEmpty(redefinir.Email) || string.IsNullOrEmpty(redefinir.NovaSenha))
+        return BadRequest(new { message = "Email e nova senha são obrigatórios." });
+
+      var usuario = await _usuarioRepository.BuscarUsuarioPorEmail(redefinir.Email);
+      if (usuario == null)
+        return NotFound(new { message = "Usuário não encontrado." });
+
+      // Gerar novo hash + salt
+      using var hmac = new System.Security.Cryptography.HMACSHA512();
+      usuario.SenhaSalt = Convert.ToBase64String(hmac.Key);
+      usuario.SenhaHash = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(redefinir.NovaSenha)));
+
+      // Atualizar no banco
+      var atualizado = await _usuarioRepository.AtualizarUsuarioAsync(usuario);
+
+      if (atualizado == 0)
+        return StatusCode(500, new { message = "Erro ao redefinir senha." });
+
+      return Ok(new { message = "Senha redefinida com sucesso." });
+    }
+
+
+    private string GerarToken(Usuario usuario)
+    {
+      var tokenHandler = new JwtSecurityTokenHandler();
+      var key = Encoding.ASCII.GetBytes("veryverycomplexkey1234567890");
+      var identity = new ClaimsIdentity(new Claim[]
+      {
+       new Claim("role", "user"),
+       new Claim(ClaimTypes.Name, $"{usuario.Nome}"),
+
+      });
+
+      var credencials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature);
+      var tokenDescriptor = new SecurityTokenDescriptor
+      {
+        Subject = identity,
+        Expires = DateTime.UtcNow.AddDays(1),
+        SigningCredentials = credencials
+      };
+      var token = tokenHandler.CreateToken(tokenDescriptor);
+      return tokenHandler.WriteToken(token);
+    }
 
 
 
-
-
-
-
-
-    // Método para redefinir a senha do usuário
-    // [HttpPost("reset-senha")]
-    // public async Task<IActionResult> ResetarSenha([FromBody] Usuario usuario)
-    // {
-    //   if (usuario == null || string.IsNullOrEmpty(usuario.Email) || string.IsNullOrEmpty(usuario.Senha))
-    //   {
-    //     return BadRequest(new { message = "Email e senha são obrigatórios." });
-    //   }
-
-    //   var usuarioEncontrado = await _usuarioRepository.ResetarSenhaUsuario(usuario.Email, usuario.Senha);
-
-    //   if (usuarioEncontrado == null)
-    //   {
-    //     return NotFound(new { message = "Usuário não encontrado ou senha incorreta." });
-    //   }
-
-    //   return Ok(new { message = "Senha alterada com sucesso", data = usuarioEncontrado });
-    // }
-
-    // // Método para deletar um usuário
-    // // [Authorize]
-    // [HttpDelete("{id}")]
-    // public async Task<IActionResult> DeleteUsuario(int id)
-    // {
-    //   var usuarioId = await _usuarioRepository.DeleteUsuarioAsync(id);
-
-    //   if (usuarioId == 0)
-    //   {
-    //     return BadRequest(new { message = "Erro ao deletar usuário." });
-    //   }
-
-    //   return Ok(new { message = "Usuário deletado com sucesso", data = usuarioId });
-    // }
-    // [HttpDelete("{id}")]
-    // public async Task<IActionResult> resetarSenha(int email)
-    // {
-    //   var existeEmail = await _usuarioRepository.getEmail(emial);
-    //   // //if validadnd se existe o email
-    //   // // Sendemail _sendEmail;
-    //   // // 
-    //   // // 
-    //   //  _sendEmail
-    //   if (usuarioId == 0)
-    //   {
-    //     return BadRequest(new { message = "Erro ao deletar usuário." });
-    //   }
-
-    //   return Ok(new { message = "Usuário deletado com sucesso", data = usuarioId });
-    // }
 
 
   }

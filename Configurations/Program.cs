@@ -38,16 +38,15 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
+  options.RequireHttpsMetadata = false;
+  options.SaveToken = true;
   options.TokenValidationParameters = new TokenValidationParameters
   {
-    ValidateIssuer = true,
-    ValidateAudience = true,
+    ValidateIssuer = false,
+    ValidateAudience = false,
     ValidateLifetime = true,
     ValidateIssuerSigningKey = true,
-    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-    ValidAudience = builder.Configuration["Jwt:Audience"],
-    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"])),
-    ClockSkew = TimeSpan.Zero
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("veryverycomplexkey1234567890")),
   };
 });
 
@@ -96,7 +95,7 @@ if (app.Environment.IsDevelopment())
 {
   app.UseDeveloperExceptionPage();
 
-  // Swagger disponível apenas no desenvolvimento
+
   app.UseSwagger();
   app.UseSwaggerUI(c =>
   {
@@ -104,11 +103,9 @@ if (app.Environment.IsDevelopment())
     c.RoutePrefix = string.Empty;
   });
 }
-
-// Middleware de CORS
 app.UseCors("AllowLocalhost4200");
 
-// Middleware de autenticação e autorização
+
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
