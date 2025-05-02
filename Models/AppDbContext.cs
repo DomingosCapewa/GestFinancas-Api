@@ -8,7 +8,7 @@ namespace GestFinancas_Api.Models
         {
         }
 
-        // DbSet para a entidade Usuario
+        
         public DbSet<Usuario> Usuario { get; set; } = null!;
         public DbSet<Transacao> Transacao { get; set; } = null!;
         public DbSet<Grupo> Grupo { get; set; } = null!;
@@ -18,7 +18,8 @@ namespace GestFinancas_Api.Models
         {
             base.OnModelCreating(modelBuilder);
 
-           
+        //    entity.Property(u => u.Token).HasMaxLength(256); 
+        // entity.Property(u => u.TokenExpiracao).IsRequired(false); 
         }
     }
 }

@@ -114,3 +114,5 @@ C:\GestFinancas\GestFinancas-Api\obj\Debug\net6.0\refint\GestFinancas-Api.dll
 C:\GestFinancas\GestFinancas-Api\obj\Debug\net6.0\GestFinancas-Api.pdb
 C:\GestFinancas\GestFinancas-Api\obj\Debug\net6.0\GestFinancas-Api.genruntimeconfig.cache
 C:\GestFinancas\GestFinancas-Api\obj\Debug\net6.0\ref\GestFinancas-Api.dll
+C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\package-lock.json
+C:\GestFinancas\gestfinancas-api\bin\Debug\net6.0\package.json

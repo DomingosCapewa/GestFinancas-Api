@@ -18,7 +18,12 @@ namespace GestFinancas_Api.Data
     {
       return await _context.Usuario.ToListAsync();
     }
-
+public async Task<Usuario> BuscarUsuarioPorToken(string token)
+    {
+        return await _context.Usuario
+        
+        .FirstOrDefaultAsync(u => u.Token == token);
+    }
     public async Task<Usuario?> ObterUsuarioPorIdAsync(int id)
     {
       return await _context.Usuario

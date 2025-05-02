@@ -11,13 +11,18 @@ using System.Net;
 using System.Net.Mail;
 using GestFinancas_Api.Helper;
 using System.Text;
-using GestFinancas_Api.Models;
+
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using GestFinancas_Api.Dtos;
 using GestFinancas_Api.Identity;
 using GestFinancas_Api.Data;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Cryptography;
+
 
 
 
@@ -99,7 +104,7 @@ namespace GestFinancas.Controllers
       usuario.SenhaSalt = Convert.ToBase64String(hmac.Key);
       usuario.SenhaHash = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(usuario.Senha)));
 
-      // Evita salvar a senha original no banco
+
       usuario.Senha = null;
 
       var usuarioId = await _usuarioRepository.AddUsuarioAsync(usuario);
@@ -137,24 +142,21 @@ namespace GestFinancas.Controllers
       return Ok(new { message = "Usuário atualizado com sucesso", data = usuarioId });
     }
 
-    [HttpPost("reset-senha")]
-    public async Task<IActionResult> ResetarSenha([FromBody] RedefinirSenhaDto redefinir)
+    [HttpPost("confirmar-reset-senha")]
+    public async Task<IActionResult> ConfirmarResetSenha([FromBody] RedefinirSenhaTokenDto dto)
     {
-      if (string.IsNullOrEmpty(redefinir.Email) || string.IsNullOrEmpty(redefinir.NovaSenha))
-        return BadRequest(new { message = "Email e nova senha são obrigatórios." });
+      var usuario = await _usuarioRepository.BuscarUsuarioPorToken(dto.Token);
+      if (usuario == null || usuario.TokenExpiracao < DateTime.UtcNow)
+        return BadRequest(new { message = "Token inválido ou expirado." });
 
-      var usuario = await _usuarioRepository.BuscarUsuarioPorEmail(redefinir.Email);
-      if (usuario == null)
-        return NotFound(new { message = "Usuário não encontrado." });
-
-      // Gerar novo hash + salt
-      using var hmac = new System.Security.Cryptography.HMACSHA512();
+      using var hmac = new HMACSHA512();
       usuario.SenhaSalt = Convert.ToBase64String(hmac.Key);
-      usuario.SenhaHash = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(redefinir.NovaSenha)));
+      usuario.SenhaHash = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(dto.NovaSenha)));
 
-      // Atualizar no banco
+      usuario.Token = null;
+      usuario.TokenExpiracao = null;
+
       var atualizado = await _usuarioRepository.AtualizarUsuarioAsync(usuario);
-
       if (atualizado == 0)
         return StatusCode(500, new { message = "Erro ao redefinir senha." });
 
