@@ -13,7 +13,7 @@ namespace GestFinancas_Api.Controllers
     private readonly EnviarEmail _enviarEmail;
     private readonly IUsuarioRepository _usuarioRepository;
 
-    // O EnviarEmail e o IUsuarioRepository agora são injetados via DI
+
     public EmailController(EnviarEmail enviarEmail, IUsuarioRepository usuarioRepository)
     {
       _enviarEmail = enviarEmail;
@@ -21,17 +21,28 @@ namespace GestFinancas_Api.Controllers
     }
 
     /// <summary>
-    /// Envia um e-mail de recuperação de senha.
+
     /// </summary>
-    [HttpPost("recuperar-senha")]
+    [HttpPost("email-recuperacao-senha")]
     public async Task<IActionResult> RecuperarSenha([FromBody] Usuario usuario)
     {
       if (usuario == null || string.IsNullOrEmpty(usuario.Email))
         return BadRequest("O email é obrigatório!");
 
-     
+
       await _enviarEmail.EnviarEmailRecuperacaoSenha(usuario.Email);
       return Ok("Email enviado com sucesso!");
     }
+
+    [HttpPost("confirmar-cadastro")]
+    public async Task<IActionResult> ConfirmarCadastro([FromBody] Usuario usuario)
+    {
+      if (usuario == null || string.IsNullOrEmpty(usuario.Email))
+        return BadRequest("O email é obrigatório!");
+
+      await _enviarEmail.EnviarEmailConfirmacaoCadastro(usuario.Email, usuario.Nome);
+      return Ok("Email enviado com sucesso!");
+    }
+
   }
 }

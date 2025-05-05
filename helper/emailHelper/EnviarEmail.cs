@@ -45,7 +45,7 @@ namespace GestFinancas_Api.Helper
       usuario.TokenExpiracao = DateTime.UtcNow.AddHours(24);
       await _usuarioRepository.AtualizarUsuarioAsync(usuario);
 
-      // Montar e enviar o e-mail
+
       MailMessage mailMessage = new MailMessage(_emailRemetente, email);
       SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", 587);
 
@@ -63,6 +63,43 @@ namespace GestFinancas_Api.Helper
             <p>Se você não fez essa solicitação, ignore este e-mail. Sua conta permanecerá segura.</p>
             <p>Este link é válido por 24 horas.</p>
             <hr><p><strong>Equipe GestFinanças</strong></p>";
+
+        smtpClient.UseDefaultCredentials = false;
+        smtpClient.Credentials = new NetworkCredential(_emailRemetente, _senha);
+        smtpClient.EnableSsl = true;
+
+        smtpClient.Send(mailMessage);
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine("Erro ao enviar email: " + ex.Message);
+      }
+    }
+
+    //vou tentar adicionar a lógica para o envio de email de confirmação de cadastro
+    public async Task EnviarEmailConfirmacaoCadastro(string email, string nomeUsuario)
+    {
+      var usuario = await _usuarioRepository.ObterUsuarioPorEmailAsync(email);
+
+      if (string.IsNullOrEmpty(email))
+      {
+        Console.WriteLine("Email não informado!");
+        return;
+      }
+      
+      MailMessage mailMessage = new MailMessage(_emailRemetente, email);
+      SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", 587);
+
+      try
+      {
+        mailMessage.Subject = "Confirmação de Cadastro";
+        mailMessage.IsBodyHtml = true;
+        mailMessage.Body = $@"
+          <h1>Olá, {nomeUsuario}!</h1><hr>
+          <p>Bem-vindo ao <strong>GestFinancas</strong>!</p>
+          <p>Seu cadastro foi realizado com sucesso.</p>
+          <p>Aproveite para explorar todas as funcionalidades que oferecemos.</p>
+          <hr><p><strong>Equipe GestFinanças</strong></p>";
 
         smtpClient.UseDefaultCredentials = false;
         smtpClient.Credentials = new NetworkCredential(_emailRemetente, _senha);

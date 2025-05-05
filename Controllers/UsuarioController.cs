@@ -46,7 +46,7 @@ namespace GestFinancas.Controllers
 
     }
 
-    // Método para obter todos os usuários
+
     [Authorize]
     [HttpGet]
     public async Task<IActionResult> ObterTodosUsuarios()
@@ -71,7 +71,7 @@ namespace GestFinancas.Controllers
       if (!autenticado)
         return Unauthorized(new { message = "Email ou senha inválidos." });
 
-      // Buscar o usuário completo após autenticação
+
       var usuario = await _usuarioRepository.BuscarUsuarioPorEmail(login.Email);
       if (usuario == null)
         return NotFound(new { message = "Usuário não encontrado." });
@@ -98,7 +98,7 @@ namespace GestFinancas.Controllers
         return BadRequest(new { message = "Este email já está cadastrado" });
       }
 
-      // Aqui criamos o hash e salt da senha
+
       using var hmac = new System.Security.Cryptography.HMACSHA512();
 
       usuario.SenhaSalt = Convert.ToBase64String(hmac.Key);
@@ -122,7 +122,7 @@ namespace GestFinancas.Controllers
 
 
 
-    // Método para atualizar um usuário
+
     // [Authorize]
     [HttpPut]
     public async Task<IActionResult> AtualizarUsuario([FromBody] Usuario usuario)
