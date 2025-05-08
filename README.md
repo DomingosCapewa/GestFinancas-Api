@@ -14,7 +14,7 @@
 
 - **Relatórios Financeiros**:
   - Geração de relatórios para análise de receitas e despesas.
-  - Exportação de dados (se aplicável).
+  - Exportação de dados.
 
 ## Tecnologias Utilizadas
 
