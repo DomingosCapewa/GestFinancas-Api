@@ -19,10 +19,10 @@
 ## Tecnologias Utilizadas
 
 - **Linguagem**: C#
-- **Framework**: .NET Core ou .NET 5/6 (dependendo da versão utilizada).
-- **Banco de Dados**: Especifique aqui (ex.: SQL Server, MySQL, PostgreSQL, etc.).
+- **Framework**: .NET 6.
+- **Banco de Dados**: SQL Server
 - **Autenticação**: JWT (JSON Web Tokens) para autenticação segura.
-- **Outras Dependências**: Especifique pacotes ou bibliotecas importantes se aplicáveis.
+- **Outras Dependências**: EF.
 
 ## Como Configurar o Projeto
 
