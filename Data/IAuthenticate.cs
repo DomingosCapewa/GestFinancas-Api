@@ -12,5 +12,6 @@ namespace GestFinancas_Api.Data
     Task<bool> usuarioExiste(string email);
 
     public string GenerateToken(int id, string email);
+    
   }
 }

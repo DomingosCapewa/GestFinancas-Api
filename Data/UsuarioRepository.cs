@@ -90,8 +90,11 @@ public async Task<Usuario> BuscarUsuarioPorToken(string token)
 
     public async Task<Usuario?> RecuperarSenha(string email)
     {
+
+
       return await _context.Usuario
           .FirstOrDefaultAsync(u => u.Email == email);
+        
     }
 
     //   public async Task<int> DeleteUsuarioAsync(int id)

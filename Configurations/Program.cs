@@ -61,7 +61,7 @@ builder.Services.AddCors(options =>
   });
 });
 
-// Versionamento da API (opcional)
+
 builder.Services.AddApiVersioning(options =>
 {
   options.AssumeDefaultVersionWhenUnspecified = true;

@@ -47,17 +47,19 @@ namespace GestFinancas.Controllers
     }
 
 
-    [Authorize]
+    // [Authorize]
     [HttpGet]
     public async Task<IActionResult> ObterTodosUsuarios()
     {
+      
       var usuario = await _usuarioRepository.ObterTodosUsuariosAsync();
 
       if (usuario.Count == 0)
       {
         return NotFound(new { message = "Nenhum usuário encontrado." });
       }
-
+      var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+      
       return Ok(usuario);
     }
 

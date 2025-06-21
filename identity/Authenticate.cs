@@ -41,19 +41,19 @@ namespace GestFinancas_Api.Identity
 
       try
       {
-        // Cria HMAC com o salt salvo
+
         using var hmac = new HMACSHA512(Convert.FromBase64String(usuario.SenhaSalt));
 
-        // Gera o hash da senha fornecida
+     
         var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(senha));
         var storedHash = Convert.FromBase64String(usuario.SenhaHash);
 
-        // Compara os hashes
+        
         return computedHash.SequenceEqual(storedHash);
       }
       catch
       {
-        // Em caso de erro ao converter strings ou gerar hash
+        
         return false;
       }
     }

@@ -16,13 +16,13 @@ namespace GestFinancas.Services
 {
   public class TokenService
   {
-    // Este método gera o token JWT
+   
     public static dynamic GenerateToken(Usuario usuario)
     {
-      // Definir a chave secreta (geralmente vem de uma variável de ambiente ou configuração)
-      var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET_KEY")); // Substitua por sua chave secreta
+     
+      var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET_KEY")); 
 
-      // Criar a descrição do token (SecurityTokenDescriptor)
+      
       var tokenDescriptor = new SecurityTokenDescriptor
       {
         Subject = new ClaimsIdentity(new Claim[]
@@ -33,17 +33,17 @@ namespace GestFinancas.Services
           }),
         Expires = DateTime.UtcNow.AddHours(3), // Definindo tempo de expiração do token
         SigningCredentials = new SigningCredentials(
-              new SymmetricSecurityKey(key), // Usando a chave secreta para assinatura
-              SecurityAlgorithms.HmacSha256Signature // Algoritmo de assinatura
+              new SymmetricSecurityKey(key),
+              SecurityAlgorithms.HmacSha256Signature
           )
       };
 
       // Criar o token JWT usando o descriptor
       var tokenHandler = new JwtSecurityTokenHandler();
-      var token = tokenHandler.CreateToken(tokenDescriptor); // Gerar o token
-      var tokenString = tokenHandler.WriteToken(token); // Converter para string
+      var token = tokenHandler.CreateToken(tokenDescriptor); 
+      var tokenString = tokenHandler.WriteToken(token); 
 
-      // Retornar o token com as informações do usuário
+      
       return new
       {
         usuario = usuario,
@@ -59,7 +59,7 @@ public class TokenService
 {
   public string GerarTokenRecuperacao()
   {
-    // Gerar um token aleatório
+   
     var token = Guid.NewGuid().ToString();
     return token;
   }
