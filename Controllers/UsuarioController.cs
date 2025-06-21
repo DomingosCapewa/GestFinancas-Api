@@ -16,11 +16,8 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using GestFinancas_Api.Dtos;
-using GestFinancas_Api.Identity;
-using GestFinancas_Api.Data;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+
+
 using System.Security.Cryptography;
 
 
@@ -51,7 +48,7 @@ namespace GestFinancas.Controllers
     [HttpGet]
     public async Task<IActionResult> ObterTodosUsuarios()
     {
-      
+    
       var usuario = await _usuarioRepository.ObterTodosUsuariosAsync();
 
       if (usuario.Count == 0)
@@ -62,6 +59,7 @@ namespace GestFinancas.Controllers
       
       return Ok(usuario);
     }
+
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto login)
