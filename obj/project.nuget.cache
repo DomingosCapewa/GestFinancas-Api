@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "jJuFCqaSyf8=",
+  "dgSpecHash": "bEO/dC3i1J4=",
   "success": true,
-  "projectFilePath": "C:\\GestFinancas\\gestfinancas-api\\GestFinancas-Api.csproj",
+  "projectFilePath": "C:\\GestFinancas\\GestFinancas-Api\\GestFinancas-Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\olado\\.nuget\\packages\\azure.core\\1.36.0\\azure.core.1.36.0.nupkg.sha512",
     "C:\\Users\\olado\\.nuget\\packages\\azure.identity\\1.10.4\\azure.identity.1.10.4.nupkg.sha512",
@@ -142,7 +142,7 @@
       "code": "NU1902",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "O pacote 'Azure.Identity' 1.10.4 tem uma moderado vulnerabilidade de gravidade conhecida, https://github.com/advisories/GHSA-m5vv-6r4h-3vj9",
+      "message": "Package 'Azure.Identity' 1.10.4 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-m5vv-6r4h-3vj9",
       "libraryId": "Azure.Identity",
       "targetGraphs": [
         "net6.0"
@@ -152,7 +152,7 @@
       "code": "NU1902",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "O pacote 'Azure.Identity' 1.10.4 tem uma moderado vulnerabilidade de gravidade conhecida, https://github.com/advisories/GHSA-wvxc-855f-jvrv",
+      "message": "Package 'Azure.Identity' 1.10.4 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-wvxc-855f-jvrv",
       "libraryId": "Azure.Identity",
       "targetGraphs": [
         "net6.0"
@@ -162,7 +162,7 @@
       "code": "NU1902",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "O pacote 'Microsoft.Identity.Client' 4.57.0 tem uma moderado vulnerabilidade de gravidade conhecida, https://github.com/advisories/GHSA-m5vv-6r4h-3vj9",
+      "message": "Package 'Microsoft.Identity.Client' 4.57.0 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-m5vv-6r4h-3vj9",
       "libraryId": "Microsoft.Identity.Client",
       "targetGraphs": [
         "net6.0"
@@ -172,7 +172,7 @@
       "code": "NU1901",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "O pacote 'Microsoft.Identity.Client' 4.57.0 tem uma baixa vulnerabilidade de gravidade conhecida, https://github.com/advisories/GHSA-x674-v45j-fwxw",
+      "message": "Package 'Microsoft.Identity.Client' 4.57.0 has a known low severity vulnerability, https://github.com/advisories/GHSA-x674-v45j-fwxw",
       "libraryId": "Microsoft.Identity.Client",
       "targetGraphs": [
         "net6.0"
@@ -182,7 +182,7 @@
       "code": "NU1902",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "O pacote 'Swashbuckle.AspNetCore.SwaggerUI' 6.2.3 tem uma moderado vulnerabilidade de gravidade conhecida, https://github.com/advisories/GHSA-qrmm-w75w-3wpx",
+      "message": "Package 'Swashbuckle.AspNetCore.SwaggerUI' 6.2.3 has a known moderate severity vulnerability, https://github.com/advisories/GHSA-qrmm-w75w-3wpx",
       "libraryId": "Swashbuckle.AspNetCore.SwaggerUI",
       "targetGraphs": [
         "net6.0"
@@ -192,7 +192,7 @@
       "code": "NU1903",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "O pacote 'System.Formats.Asn1' 7.0.0 tem uma alta vulnerabilidade de gravidade conhecida, https://github.com/advisories/GHSA-447r-wph3-92pm",
+      "message": "Package 'System.Formats.Asn1' 7.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-447r-wph3-92pm",
       "libraryId": "System.Formats.Asn1",
       "targetGraphs": [
         "net6.0"

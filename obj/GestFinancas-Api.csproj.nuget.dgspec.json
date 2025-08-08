@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\GestFinancas\\gestfinancas-api\\GestFinancas-Api.csproj": {}
+    "C:\\GestFinancas\\GestFinancas-Api\\GestFinancas-Api.csproj": {}
   },
   "projects": {
-    "C:\\GestFinancas\\gestfinancas-api\\GestFinancas-Api.csproj": {
+    "C:\\GestFinancas\\GestFinancas-Api\\GestFinancas-Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\GestFinancas\\gestfinancas-api\\GestFinancas-Api.csproj",
+        "projectUniqueName": "C:\\GestFinancas\\GestFinancas-Api\\GestFinancas-Api.csproj",
         "projectName": "GestFinancas-Api",
-        "projectPath": "C:\\GestFinancas\\gestfinancas-api\\GestFinancas-Api.csproj",
+        "projectPath": "C:\\GestFinancas\\GestFinancas-Api\\GestFinancas-Api.csproj",
         "packagesPath": "C:\\Users\\olado\\.nuget\\packages\\",
-        "outputPath": "C:\\GestFinancas\\gestfinancas-api\\obj\\",
+        "outputPath": "C:\\GestFinancas\\GestFinancas-Api\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
